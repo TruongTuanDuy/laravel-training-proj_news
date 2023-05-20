@@ -6,24 +6,25 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SliderModel as MainModel;
 
-
 class SliderController extends Controller
 {
-    private $pathViewController = 'admin.slider.';
-    private $controllerName     = 'slider123';
+    private $pathViewController = 'admin.pages.slider.';
+    private $controllerName     = 'slider';
+    private $params = [];
     private $model;
 
     public function __construct()
     {
         $this->model = new MainModel();
-        View()->share('controllerName', $this->controllerName);
+        $this->params['pagination']['totalItemsPerPage'] = 2;
+        view()->share('controllerName', $this->controllerName);
     }
 
     public function index()
     {
-        $items = $this->model->listItems(null, ['task' => 'admin-list-items']);
+        $items = $this->model->listItems($this->params, ['task' => 'admin-list-items']);
         return view($this->pathViewController . 'index', [
-            'item' => $items
+            'items' => $items
         ]);
     }
     public function form($id = null)

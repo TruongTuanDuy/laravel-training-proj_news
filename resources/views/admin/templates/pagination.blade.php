@@ -9,7 +9,8 @@
         </div>
         <div class="col-md-6">
             {{-- {{ $items->links() }} --}}
-            {{ $items->links('pagination.pagination_backend') }}
+            {!! $items->appends(request()->input())->links('pagination.pagination_backend') !!}
+
         </div>
     </div>
 </div>

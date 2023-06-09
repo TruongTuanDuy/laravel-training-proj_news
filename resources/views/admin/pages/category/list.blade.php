@@ -1,61 +1,52 @@
+@php
+    use App\Helpers\Template as Template;
+    use App\Helpers\HighLight as Highlight;
+@endphp
+
 <div class="x_content">
     <div class="table-responsive">
         <table class="table table-striped jambo_table bulk_action">
             <thead>
                 <tr class="headings">
                     <th class="column-title">#</th>
-                    <th class="column-title">Slider Info</th>
+                    <th class="column-title">Name</th>
                     <th class="column-title">Trạng thái</th>
+                    <th class="column-title">Hiển thị Home</th>
+                    <th class="column-title">Kiểu hiển thị</th>
                     <th class="column-title">Tạo mới</th>
                     <th class="column-title">Chỉnh sửa</th>
                     <th class="column-title">Hành động</th>
                 </tr>
             </thead>
             <tbody>
-                @if (count($item) > 0)
-                    <tr class="odd pointer">
-                        <td>3</td>
-                        <td width="40%">
-                            <p><strong>Name:</strong> Khóa học lập trình Frontend Master</p>
-                            <p><strong>Description:</strong> Khoa học sẽ giúp bạn trở thành một chuyên gia Frontend với
-                                đầy
-                                đủ các kiến thức về HTML, CSS, JavaScript, Bootstrap, jQuery, chuyển PSD thành HTML ...
-                            </p>
-                            <p><strong>Link:</strong> https://zendvn.com/khoa-hoc-lap-trinh-frontend-master/</p>
-                            <p><img src="http://proj_news.xyz/images/slider/rEpDUQCxe4.jpeg"
-                                    alt="Khóa học lập trình Frontend Master" class="zvn-thumb" /></p>
-                        </td>
-                        <td><a href="http://proj_news.xyz/admin123/slider/change-status-active/1" type="button"
-                                class="btn btn-round btn-success">Kích hoạt</a></td>
-                        <td>
-                            <p><i class="fa fa-user"></i> admin</p>
-                            <p><i class="fa fa-clock-o"></i> 15/04/2019</p>
-                        </td>
-                        <td>
-                            <p><i class="fa fa-user"></i> admin</p>
-                            <p><i class="fa fa-clock-o"></i> 08/07/2019</p>
-                        </td>
-                        <td class="last">
-                            <div class="zvn-box-btn-filter">
-                                <a href="http://proj_news.xyz/admin123/slider/form/1" type="button"
-                                    class="btn btn-icon btn-success" data-toggle="tooltip" data-placement="top"
-                                    data-original-title="Edit">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-                                <a href="http://proj_news.xyz/admin123/slider/delete/1" type="button"
-                                    class="btn btn-icon btn-danger btn-delete" data-toggle="tooltip"
-                                    data-placement="top" data-original-title="Delete">
-                                    <i class="fa fa-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
+                @if (count($items) > 0)
+                    @foreach ($items as $key => $val)
+                        @php
+                            $index = $key + 1;
+                            $class = $index % 2 == 0 ? 'even' : 'odd';
+                            $id = $val['id'];
+                            $name = Highlight::show($val['name'], $params['search'], 'name');
+                            $status = Template::showItemStatus($controllerName, $id, $val['status']);
+                            $isHome = Template::showItemIsHome($controllerName, $id, $val['is_home']);
+                            $display = Template::showItemSelect($controllerName, $id, $val['display'], 'display');
+                            $createdHistory = Template::showItemHistory($val['created_by'], $val['created']);
+                            $modifiedHistory = Template::showItemHistory($val['modified_by'], $val['modified']);
+                            $listBtnAction = Template::showButtonAction($controllerName, $id);
+                        @endphp
+
+                        <tr class="{{ $class }} pointer">
+                            <td>{{ $index }}</td>
+                            <td width="40%">{!! $name !!}</td>
+                            <td>{!! $status !!}</td>
+                            <td>{!! $isHome !!}</td>
+                            <td>{!! $display !!}</td>
+                            <td>{!! $createdHistory !!}</td>
+                            <td>{!! $modifiedHistory !!}</td>
+                            <td class="last">{!! $listBtnAction !!}</td>
+                        </tr>
+                    @endforeach
                 @else
-                    <tr>
-                        <td colspan="6" class="text-center">
-                            Dữ liệu đang được cập nhật
-                        </td>
-                    </tr>
+                    @include('admin.templates.list_empty', ['colspan' => 6])
                 @endif
             </tbody>
         </table>

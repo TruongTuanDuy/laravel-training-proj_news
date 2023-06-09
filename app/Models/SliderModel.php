@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\AdminModel;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use DB;
 
-class SliderModel extends Model
+class SliderModel extends AdminModel
 {
-    protected $table    = 'slider';
-    protected $fieldSearchAccepted = ['id', 'name', 'description', 'link'];
-
-    public $timestamps = false;
-    const CREATED_AT = 'created';
-    const UPDATED_AT = 'modified';
+    public function __construct()
+    {
+        $this->table            = 'slider';
+        $this->folderUpload     = 'slider';
+        $this->fieldSearchAccepted = ['id', 'name', 'description', 'link'];
+        $this->crudNotAccepted = ['_token', 'thumb_current'];
+    }
 
     public function listItems($params = null, $options = null)
     {
@@ -36,9 +39,18 @@ class SliderModel extends Model
                 }
             }
 
-            $result =  $query->orderBy('id', 'desc')
+            $result = $query->orderBy('id', 'desc')
                 ->paginate($params['pagination']['totalItemsPerPage']);
         }
+
+        if ($options['task'] == "news-list-items") {
+            $query = $this->select('id', 'name', 'description', 'link', 'thumb')
+                ->where('status', '=', 'active')
+                ->limit(5);
+
+            $result = $query->get()->toArray();
+        }
+
         return $result;
     }
 
@@ -76,6 +88,10 @@ class SliderModel extends Model
             $result = self::select('id', 'name', 'description', 'status', 'link', 'thumb')->where('id', $params['id'])->first();
         }
 
+        if ($options['task'] == 'get-thumb') {
+            $result = self::select('id', 'thumb')->where('id', $params['id'])->first();
+        }
+
         return $result;
     }
 
@@ -85,13 +101,31 @@ class SliderModel extends Model
             $status = ($params['currentStatus'] == "active") ? "inactive" : "active";
             self::where('id', $params['id'])->update(['status' => $status]);
         }
+
+        if ($options['task'] == 'add-item') {
+            $params['created_by']   = "hailan";
+            $params['created']      = date('Y-m-d');
+            $params['thumb']        = $this->uploadThumb($params['thumb']);
+            self::insert($this->prepareParams($params));
+        }
+
+        if ($options['task'] == 'edit-item') {
+            if (!empty($params['thumb'])) {
+                $this->deleteThumb($params['thumb_current']);
+                $params['thumb'] = $this->uploadThumb($params['thumb']);
+            };
+
+            $params['modified_by'] = "hailan";
+            $params['modified']    = date('Y-m-d');
+            self::where('id', $params['id'])->update($this->prepareParams($params));
+        }
     }
 
     public function deleteItem($params = null, $options = null)
     {
         if ($options['task'] == 'delete-item') {
-            // $item   = self::getItem($params, ['task' => 'get-thumb']); // 
-            // $this->deleteThumb($item['thumb']);
+            $item   = self::getItem($params, ['task' => 'get-thumb']); // 
+            $this->deleteThumb($item['thumb']);
             self::where('id', $params['id'])->delete();
         }
     }

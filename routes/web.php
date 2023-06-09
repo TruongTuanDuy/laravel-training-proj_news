@@ -11,44 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// Route::get('/admin/user', function () {
-//     return ('/admin/user');
-// });
-
-// Route::get('/admin/slider', function () {
-//     return ('/admin/slider');
-// });
-
-// Route::get('/admin/category', function () {
-//     return ('/admin/category');
-// });
-
-$prefixAdmin = config('zvn.url.prefix_admin');
-// $prefixAdmin = Config::get('zvn.url.prefix_admin', 'default');
-
-// Route::prefix($prefixAdmin)->group(function () {
-//     Route::get('user', function () {
-//         return ('/admin/user');
-//         // Matches The "/admin/users" URL
-//     });
-//     Route::get('slider', function () {
-//         return ('/admin/slider');
-//     });
-//     Route::get('category', function () {
-//         return ('/admin/category');
-//     });
-// });
+$prefixAdmin    = config('zvn.url.prefix_admin');
+$prefixNews     = config('zvn.url.prefix_news');
 
 Route::group(['prefix' => $prefixAdmin], function () {
-
-    Route::get('user', function () {
-        return ('/admin/user');
-        // Matches The "/admin/users" URL
-    });
 
     // ================================ DASHBOARD ================================
     $prefix         = 'dashboard';
@@ -70,15 +36,41 @@ Route::group(['prefix' => $prefixAdmin], function () {
         Route::get('change-status-{status}/{id}',   ['as' => $controllerName . '/status',       'uses' => $controller . 'status']);
     });
 
-    Route::get('category', function () {
-        return ('/admin/category');
+    // ================================ CATEGORY ================================
+    $prefix         = 'category';
+    $controllerName = 'category';
+    Route::prefix($prefix)->group(function () use ($controllerName) {
+        $controller = ucfirst($controllerName) . 'Controller@';
+        Route::get('/',                 ['as' => $controllerName,               'uses' => $controller . 'index']);
+        Route::get('form/{id?}',        ['as' => $controllerName . '/form',     'uses' => $controller . 'form'])->where('id', '[0-9]+');
+        Route::post('save',             ['as' => $controllerName . '/save',     'uses' => $controller . 'save']);
+        Route::get('delete/{id}',       ['as' => $controllerName . '/delete',   'uses' => $controller . 'delete'])->where('id', '[0-9]+');
+        Route::get('change-status-{status}/{id}',   ['as' => $controllerName . '/status',       'uses' => $controller . 'status']);
+        Route::get('change-is-home-{isHome}/{id}',   ['as' => $controllerName . '/isHome',       'uses' => $controller . 'isHome']);
+        Route::get('change-display-{display}/{id}',     ['as' => $controllerName . '/display',     'uses' => $controller . 'display']);
+    });
+
+    // ================================ ARTICLE ================================
+    $prefix         = 'article';
+    $controllerName = 'article';
+    Route::prefix($prefix)->group(function () use ($controllerName) {
+        $controller = ucfirst($controllerName) . 'Controller@';
+        Route::get('/',             ['as' => $controllerName,               'uses' => $controller . 'index']);
+        Route::get('form/{id?}',    ['as' => $controllerName . '/form',     'uses' => $controller . 'form'])->where('id', '[0-9]+');
+        Route::post('save',         ['as' => $controllerName . '/save',     'uses' => $controller . 'save']);
+        Route::get('delete/{id}',   ['as' => $controllerName . '/delete',   'uses' => $controller . 'delete'])->where('id', '[0-9]+');
+        Route::get('change-status-{status}/{id}', ['as' => $controllerName . '/status',       'uses' => $controller . 'status']);
+        Route::get('change-type-{type}/{id}',     ['as' => $controllerName . '/type',        'uses' => $controller . 'type']);
     });
 });
 
-// Route::get('/category/{id}', function ($id) {
-//     return ('Category' . $id);
-// })->where('id', '[0-9]+');
+Route::group(['prefix' => $prefixNews], function () {
 
-// Route::get('/category/{name?}', function ($name = 'John') {
-//     return ($name);
-// });
+    // ================================ HOMEPAGE ================================
+    $prefix         = '';
+    $controllerName = 'home';
+    Route::prefix($prefix)->group(function () use ($controllerName) {
+        $controller = ucfirst($controllerName) . 'Controller@';
+        Route::get('/',                 ['as' => $controllerName,               'uses' => $controller . 'index']);
+    });
+});

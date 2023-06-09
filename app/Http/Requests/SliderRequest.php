@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class SliderRequest extends FormRequest
 {
+    private $table            = 'slider';
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -23,11 +24,23 @@ class SliderRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->id;
+
+        // $condThumb = 'bail|required|image|max:500';
+        $condThumb = 'bail|required|mimes:jpeg,png,jpg,gif|max:500';
+        $condName  = "bail|required|between:5,100|unique:$this->table,name";
+
+        if (!empty($id)) { // edit
+            // $condThumb = 'bail|image|max:500';
+            $condThumb = 'bail|mimes:jpeg,png,jpg,gif|max:500';
+            $condName  .= ",$id";
+        }
         return [
-            'name'        => 'bail|required|min:5',
+            'name'        => $condName,
             'description' => 'bail|required|min:5',
             'link'        => 'bail|required|min:5|url',
             'status'      => 'bail|in:active,inactive',
+            'thumb'       => $condThumb
         ];
     }
 

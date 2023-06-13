@@ -1,17 +1,15 @@
 @php
     use App\Helpers\Template as Template;
-    // use App\Helpers\URL;
+    use App\Helpers\URL;
     
     $name = $item['name'];
     $thumb = asset('images/article/' . $item['thumb']);
     
     if ($showCategory) {
-        // $linkCategory  =  URL::linkCategory($item['category_id'], $item['category_name']);
-        $linkCategory = '#';
+        $linkCategory = URL::linkCategory($item['category_id'], $item['category_name']);
     }
     
-    // $linkArticle  = URL::linkArticle($item['id'], $item['name']);
-    $linkArticle = '#';
+    $linkArticle = URL::linkArticle($item['id'], $item['name']);
     
     $created = Template::showDatetimeFrontend($item['created']);
     

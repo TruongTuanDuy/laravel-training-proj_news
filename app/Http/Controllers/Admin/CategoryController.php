@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\ArticleModel as MainModel;
-use App\Models\CategoryModel;
-use App\Http\Requests\ArticleRequest as MainRequest;
+use App\Models\CategoryModel as MainModel;
+use App\Http\Requests\CategoryRequest as MainRequest;
 
-class ArticleController extends Controller
+class CategoryController extends Controller
 {
-    private $pathViewController = 'admin.pages.article.';
-    private $controllerName     = 'article';
+    private $pathViewController = 'admin.pages.category.';
+    private $controllerName     = 'category';
     private $params = [];
     private $model;
 
@@ -47,12 +46,8 @@ class ArticleController extends Controller
             $item           = $this->model->getItem($params, ['task' => 'get-item']);
         }
 
-        $categoryModel  = new CategoryModel();
-        $itemsCategory  = $categoryModel->listItems(null, ['task' => 'admin-list-items-in-selectbox']);
-
         return view($this->pathViewController .  'form', [
-            'item'        => $item,
-            'itemsCategory' => $itemsCategory
+            'item'        => $item
         ]);
     }
 
@@ -81,12 +76,20 @@ class ArticleController extends Controller
         return redirect()->route($this->controllerName)->with('zvn_notify', 'Cập nhật trạng thái thành công!');
     }
 
-    public function type(Request $request)
+    public function isHome(Request $request)
     {
-        $params["currentType"]    = $request->type;
-        $params["id"]             = $request->id;
-        $this->model->saveItem($params, ['task' => 'change-type']);
-        return redirect()->route($this->controllerName)->with("zvn_notify", "Cập nhật kiểu bài viết thành công!");
+        $params['currentIsHome'] = $request->isHome;
+        $params['id'] = $request->id;
+        $this->model->saveItem($params, ['task' => 'change-is-home']);
+        return redirect()->route($this->controllerName)->with('zvn_notify', 'Cập nhật trạng thái hiển thị trang chủ thành công!');
+    }
+
+    public function display(Request $request)
+    {
+        $params["currentDisplay"]   = $request->display;
+        $params["id"]               = $request->id;
+        $this->model->saveItem($params, ['task' => 'change-display']);
+        return redirect()->route($this->controllerName)->with("zvn_notify", "Cập nhật kiểu hiển thị thành công!");
     }
 
     public function delete(Request $request)

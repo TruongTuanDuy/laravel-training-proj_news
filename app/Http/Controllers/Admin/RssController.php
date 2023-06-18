@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\SliderModel as MainModel;
-use App\Http\Requests\SliderRequest as MainRequest;
+use App\Models\RssModel as MainModel;
+use App\Http\Requests\RssRequest as MainRequest;
 
-class SliderController extends Controller
+class RssController extends Controller
 {
-    private $pathViewController = 'admin.pages.slider.';
-    private $controllerName     = 'slider';
+    private $pathViewController = 'admin.pages.rss.';
+    private $controllerName     = 'rss';
     private $params = [];
     private $model;
 

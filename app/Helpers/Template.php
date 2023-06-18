@@ -75,13 +75,14 @@ class Template
     public static function showItemStatus($controllerName, $id, $statusValue)
     {
         $tmplStatus = Config::get('zvn.template.status');
-        $statusValue        = array_key_exists($statusValue, $tmplStatus) ? $statusValue : 'default';
+        $statusValue = array_key_exists($statusValue, $tmplStatus) ? $statusValue : 'default';
         $currentTemplateStatus = $tmplStatus[$statusValue];
-        $link          = route($controllerName . '/status', ['status' => $statusValue, 'id' => $id]);
+        $link = route($controllerName . '/status', ['status' => $statusValue, 'id' => $id]);
 
         $xhtml = sprintf(
-            '<a href="%s" type="button" class="btn btn-round %s">%s</a>',
+            '<button data-url="%s" type="button" data-class="%s" class="btn btn-round %s status-ajax">%s</button>',
             $link,
+            $currentTemplateStatus['class'],
             $currentTemplateStatus['class'],
             $currentTemplateStatus['name']
         );
@@ -96,8 +97,9 @@ class Template
         $link = route($controllerName . '/isHome', ['is_home' => $isHomeValue, 'id' => $id]);
 
         $xhtml = sprintf(
-            '<a href="%s" type="button" class="btn btn-round %s">%s</a>',
+            '<button data-url="%s" type="button" data-class="%s" class="btn btn-round %s is-home-ajax">%s</button>',
             $link,
+            $currentTemplateIsHome['class'],
             $currentTemplateIsHome['class'],
             $currentTemplateIsHome['name']
         );

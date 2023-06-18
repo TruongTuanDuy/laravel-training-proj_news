@@ -78,7 +78,13 @@ class ArticleController extends Controller
         $params['currentStatus'] = $request->status;
         $params['id'] = $request->id;
         $this->model->saveItem($params, ['task' => 'change-status']);
-        return redirect()->route($this->controllerName)->with('zvn_notify', 'Cập nhật trạng thái thành công!');
+        $status = $request->status == 'active' ? 'inactive' : 'active';
+        $link = route($this->controllerName . '/status', ['status' => $status, 'id' => $request->id]);
+
+        return response()->json([
+            'statusObj' => config('zvn.template.status')[$status],
+            'link' => $link,
+        ]);
     }
 
     public function type(Request $request)
@@ -86,7 +92,9 @@ class ArticleController extends Controller
         $params["currentType"]    = $request->type;
         $params["id"]             = $request->id;
         $this->model->saveItem($params, ['task' => 'change-type']);
-        return redirect()->route($this->controllerName)->with("zvn_notify", "Cập nhật kiểu bài viết thành công!");
+        return response()->json([
+            'status' => 'success',
+        ]);
     }
 
     public function delete(Request $request)

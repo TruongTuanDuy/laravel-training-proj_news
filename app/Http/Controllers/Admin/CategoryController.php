@@ -73,15 +73,27 @@ class CategoryController extends Controller
         $params['currentStatus'] = $request->status;
         $params['id'] = $request->id;
         $this->model->saveItem($params, ['task' => 'change-status']);
-        return redirect()->route($this->controllerName)->with('zvn_notify', 'Cập nhật trạng thái thành công!');
+        $status = $request->status == 'active' ? 'inactive' : 'active';
+        $link = route($this->controllerName . '/status', ['status' => $status, 'id' => $request->id]);
+
+        return response()->json([
+            'statusObj' => config('zvn.template.status')[$status],
+            'link' => $link,
+        ]);
     }
 
     public function isHome(Request $request)
     {
-        $params['currentIsHome'] = $request->isHome;
+        $params['currentIsHome'] = $request->is_home;
         $params['id'] = $request->id;
         $this->model->saveItem($params, ['task' => 'change-is-home']);
-        return redirect()->route($this->controllerName)->with('zvn_notify', 'Cập nhật trạng thái hiển thị trang chủ thành công!');
+        $isHomeValue = $request->is_home == 'yes' ? 'no' : 'yes';
+        $link = route($this->controllerName . '/isHome', ['is_home' => $isHomeValue, 'id' => $request->id]);
+
+        return response()->json([
+            'isHomeObj' => config('zvn.template.is_home')[$isHomeValue],
+            'link' => $link,
+        ]);
     }
 
     public function display(Request $request)
@@ -89,7 +101,9 @@ class CategoryController extends Controller
         $params["currentDisplay"]   = $request->display;
         $params["id"]               = $request->id;
         $this->model->saveItem($params, ['task' => 'change-display']);
-        return redirect()->route($this->controllerName)->with("zvn_notify", "Cập nhật kiểu hiển thị thành công!");
+        return response()->json([
+            'status' => 'success',
+        ]);
     }
 
     public function delete(Request $request)

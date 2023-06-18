@@ -27,8 +27,8 @@ return [
             'all'      => ['name' => 'Tất cả', 'class' => 'btn-success'],
             'active'   => ['name' => 'Kích hoạt', 'class'      => 'btn-success'],
             'inactive' => ['name' => 'Chưa kích hoạt', 'class' => 'btn-info'],
-            'block' => ['name' => 'Bị khóa', 'class' => 'btn-danger'],
-            'default'      => ['name' => 'Chưa xác định', 'class' => 'btn-success'],
+            'block'    => ['name' => 'Bị khóa', 'class' => 'btn-danger'],
+            'default'  => ['name' => 'Chưa xác định', 'class' => 'btn-success'],
         ],
         'is_home'       => [
             'yes'      =>  ['name' => 'Hiển thị', 'class' => 'btn-primary'],
@@ -41,6 +41,10 @@ return [
         'type' => [
             'featured'   => ['name' => 'Nổi bật'],
             'normal'     => ['name' => 'Bình thường'],
+        ],
+        'rss_source' => [
+            'vnexpress'   => ['name' => 'VNExpress'],
+            'tuoitre'     => ['name' => 'Tuổi trẻ'],
         ],
         'level'       => [
             'admin'      => ['name' => 'Quản trị hệ thống'],
@@ -71,6 +75,7 @@ return [
             'slider'    => ['all', 'id', 'name', 'description', 'link'],
             'category'  => ['all', 'name'],
             'article'   => ['all', 'name', 'content'],
+            'rss'       => ['all', 'name', 'link'],
             'user'      => ['all', 'username', 'email', 'fullname'],
         ],
         'button' => [
@@ -78,6 +83,7 @@ return [
             'slider'    => ['edit', 'delete'],
             'category'  => ['edit', 'delete'],
             'article'   => ['edit', 'delete'],
+            'rss'       => ['edit', 'delete'],
             'user'      => ['edit'],
         ]
     ]

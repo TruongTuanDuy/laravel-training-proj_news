@@ -46,8 +46,8 @@ Route::group(['prefix' => $prefixAdmin, 'namespace' => 'Admin', 'middleware' => 
         Route::post('save',             ['as' => $controllerName . '/save',     'uses' => $controller . 'save']);
         Route::get('delete/{id}',       ['as' => $controllerName . '/delete',   'uses' => $controller . 'delete'])->where('id', '[0-9]+');
         Route::get('change-status-{status}/{id}',   ['as' => $controllerName . '/status',       'uses' => $controller . 'status']);
-        Route::get('change-is-home-{isHome}/{id}',   ['as' => $controllerName . '/isHome',       'uses' => $controller . 'isHome']);
-        Route::get('change-display-{display}/{id}',     ['as' => $controllerName . '/display',     'uses' => $controller . 'display']);
+        Route::get('change-is-home-{is_home}/{id}', ['as' => $controllerName . '/isHome',       'uses' => $controller . 'isHome']);
+        Route::get('change-display-{display}/{id}', ['as' => $controllerName . '/display',     'uses' => $controller . 'display']);
     });
 
     // ================================ ARTICLE ================================
@@ -76,6 +76,18 @@ Route::group(['prefix' => $prefixAdmin, 'namespace' => 'Admin', 'middleware' => 
         Route::get('delete/{id}', ['as' => $controllerName . '/delete', 'uses' => $controller . 'delete'])->where('id', '[0-9]+');
         Route::get('change-status-{status}/{id}',   ['as' => $controllerName . '/status', 'uses' => $controller . 'status']);
         Route::get('change-level-{level}/{id}',     ['as' => $controllerName . '/level', 'uses' => $controller . 'level']);
+    });
+
+    // ================================ RSS ================================
+    $prefix         = 'rss';
+    $controllerName = 'rss';
+    Route::prefix($prefix)->group(function () use ($controllerName) {
+        $controller = ucfirst($controllerName) . 'Controller@';
+        Route::get('/',                 ['as' => $controllerName,               'uses' => $controller . 'index']);
+        Route::get('form/{id?}',        ['as' => $controllerName . '/form',     'uses' => $controller . 'form'])->where('id', '[0-9]+');
+        Route::post('save',             ['as' => $controllerName . '/save',     'uses' => $controller . 'save']);
+        Route::get('delete/{id}',       ['as' => $controllerName . '/delete',   'uses' => $controller . 'delete'])->where('id', '[0-9]+');
+        Route::get('change-status-{status}/{id}',   ['as' => $controllerName . '/status',       'uses' => $controller . 'status']);
     });
 });
 
@@ -128,5 +140,15 @@ Route::group(['prefix' => $prefixNews, 'namespace' => 'News'], function () {
 
         // ====================== LOGOUT ========================
         Route::get('/logout',       ['as' => $controllerName . '/logout',     'uses' => $controller . 'logout']);
+    });
+
+    // ================================ RSS ================================
+    $prefix         = '';
+    $controllerName = 'rss';
+    Route::prefix($prefix)->group(function () use ($controllerName) {
+        $controller = ucfirst($controllerName) . 'Controller@';
+        Route::get('/tin-tuc-tong-hop', ['as' => "$controllerName/index", 'uses' => $controller . 'index']);
+        Route::get('/get-gold',         ['as' => "$controllerName/get-gold", 'uses' => $controller . 'getGold']);
+        Route::get('/get-coin',         ['as' => "$controllerName/get-coin", 'uses' => $controller . 'getCoin']);
     });
 });

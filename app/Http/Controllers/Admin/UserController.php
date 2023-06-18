@@ -69,10 +69,16 @@ class UserController extends Controller
 
     public function status(Request $request)
     {
-        $params["currentStatus"]  = $request->status;
-        $params["id"]             = $request->id;
+        $params['currentStatus'] = $request->status;
+        $params['id'] = $request->id;
         $this->model->saveItem($params, ['task' => 'change-status']);
-        return redirect()->route($this->controllerName)->with('zvn_notify', 'Cập nhật trạng thái thành công!');
+        $status = $request->status == 'active' ? 'inactive' : 'active';
+        $link = route($this->controllerName . '/status', ['status' => $status, 'id' => $request->id]);
+
+        return response()->json([
+            'statusObj' => config('zvn.template.status')[$status],
+            'link' => $link,
+        ]);
     }
 
     public function changeLevel(MainRequest $request)
@@ -98,7 +104,10 @@ class UserController extends Controller
         $params["currentLevel"]   = $request->level;
         $params["id"]               = $request->id;
         $this->model->saveItem($params, ['task' => 'change-level']);
-        return redirect()->route($this->controllerName)->with("zvn_notify", "Cập nhật kiểu hiện thị thành công!");
+        return response()->json([
+            'status' => 'success',
+        ]);
+        // return redirect()->route($this->controllerName)->with("zvn_notify", "Cập nhật kiểu hiện thị thành công!");
     }
 
     public function delete(Request $request)

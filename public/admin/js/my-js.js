@@ -102,9 +102,22 @@ $(document).ready(function () {
 	// });
 
 	$selectChangeAttr.on('change', function () {
-		let select_value = $(this).val();
-		let $url = $(this).data('url');
-		window.location.href = $url.replace('value_new', select_value);
+		let ele = $(this);
+		let selectValue = $(this).val();
+		let url = $(this).data('url');
+		url = url.replace('value_new', selectValue);
+
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			success: function (response) {
+				ele.notify("Cập nhật thành công", {
+					position: "top center",
+					className: "success",
+				});
+			}
+		});
 	});
 
 	$selectChangeAttrAjax.on('change', function () {
@@ -143,5 +156,49 @@ $(document).ready(function () {
 	$('.btn-delete').on('click', function () {
 		if (!confirm('Bạn có chắc muốn xóa phần tử?'))
 			return false;
+	});
+
+	$('.status-ajax').on('click', function () {
+		let url = $(this).data('url');
+		let btn = $(this);
+		let currentClass = btn.data('class');
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			success: function (response) {
+				btn.removeClass(currentClass);
+				btn.addClass(response.statusObj.class);
+				btn.html(response.statusObj.name);
+				btn.data('url', response.link);
+				btn.data('class', response.statusObj.class);
+				btn.notify("Cập nhật thành công", {
+					position: "top center",
+					className: "success",
+				});
+			}
+		});
+	});
+
+	$('.is-home-ajax').on('click', function () {
+		let url = $(this).data('url');
+		let btn = $(this);
+		let currentClass = btn.data('class');
+		$.ajax({
+			type: "GET",
+			url: url,
+			dataType: "json",
+			success: function (response) {
+				btn.removeClass(currentClass);
+				btn.addClass(response.isHomeObj.class);
+				btn.html(response.isHomeObj.name);
+				btn.data('url', response.link);
+				btn.data('class', response.isHomeObj.class);
+				btn.notify("Cập nhật thành công", {
+					position: "top center",
+					className: "success",
+				});
+			}
+		});
 	});
 });
